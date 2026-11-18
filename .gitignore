@@ -33,3 +33,4 @@ _agent-scratch/results/*.png
 # Python bytecode from the mining tools
 __pycache__/
 *.pyc
+mcp.pycharm.json
