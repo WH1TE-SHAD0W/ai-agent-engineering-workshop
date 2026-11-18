@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "./.github/hooks/scripts/block-dangerous-commands.sh",
+        "powershell": "pwsh -NoProfile -File ./.github/hooks/scripts/block-dangerous-commands.ps1",
+        "timeoutSec": 5
+      }
+    ],
+    "agentStop": [
+      {
+        "type": "command",
+        "bash": "dotnet test --nologo --filter FullyQualifiedName~SpaceRockIT.Reviews.Api.Tests",
+        "powershell": "dotnet test --nologo --filter FullyQualifiedName~SpaceRockIT.Reviews.Api.Tests",
+        "timeoutSec": 120
+      }
+    ]
+  }
+}

@@ -24,3 +24,9 @@
 ## 4. Privacy & Data Guardrails
 - Sanitize free-text user inputs for email addresses before writing to logs or public response payloads.
 - Use the `/pii-sanitizer` skill to apply the standard redaction logic.
+
+## 5. Destructive operations
+- Never run a destructive or irreversible shell command. This includes `rm -rf`,
+  `git clean -fd`, `git push --force`, dropping tables, and piping a download into a shell.
+- If a task appears to need one, stop and explain what you would run and why. The human decides.
+- Prefer a reversible alternative when one exists.
