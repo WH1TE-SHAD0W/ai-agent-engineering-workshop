@@ -1,6 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton<SpaceRockIT.Reviews.Api.Services.InMemoryReviewStore>();
 
 // The website calls this API from the browser's origin, so it needs to be allowed through.
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
