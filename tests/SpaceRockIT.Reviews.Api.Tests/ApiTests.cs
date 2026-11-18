@@ -115,6 +115,36 @@ public class ApiTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
+    public async Task Email_addresses_in_comments_are_redacted_before_logging()
+    {
+        var sink = new TestLogSink();
+        using var loggedFactory = factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddProvider(new TestLoggerProvider(sink));
+            });
+        });
+
+        var client = loggedFactory.CreateClient();
+        var response = await client.PostAsJsonAsync("/reviews", new
+        {
+            workshopId = "ws-gdpr",
+            attendeeId = "attendee-log",
+            rating = 5,
+            comment = "Share your slides at alex.dev@enterprise.org please"
+        });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Contains(sink.Entries,
+            entry => entry.Level == LogLevel.Information
+                     && entry.Message == "Received review for ws-gdpr: Share your slides at [redacted-email] please");
+        Assert.DoesNotContain(sink.Entries,
+            entry => entry.Message.Contains("alex.dev@enterprise.org", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task Decimal_rating_returns_bad_request()
     {
         using var content = new StringContent(
